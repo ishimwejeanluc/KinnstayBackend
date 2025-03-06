@@ -5,12 +5,12 @@ const jwt = require('jsonwebtoken');
 
 class AuthService {
     // Register a new user
-    async register(name, email, password, phone, profile_picture, role) {
+    async register(name, email, password, phone, role) {
         const existingUser = await User.findOne({ where: { email } });
         if (existingUser) throw new Error('User already exists');
 
         const hashedPassword = bcrypt.hashSync(password, 8);
-        return await User.create({ name, email, password: hashedPassword, phone, profile_picture, role });
+        return await User.create({ name, email, password: hashedPassword, phone, role });
     }
 
     // Login and return JWT token

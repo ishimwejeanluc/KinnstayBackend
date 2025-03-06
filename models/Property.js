@@ -41,6 +41,10 @@ const Property = sequelize.define("Property", {
     type: DataTypes.JSON,
     allowNull: false,
   },
+  picture: {
+    type: DataTypes.JSON,
+    allowNull: true,
+  },
   created_at: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,

@@ -49,6 +49,19 @@ class PropertyController {
             res.status(500).json({ error: error.message });
         }
     }
+    async getPropertiesByHostId(req, res) {
+        const { host_id } = req.params; // Get host_id from request parameters
+        try {
+            const properties = await PropertyService.getPropertiesByHostId(host_id);
+            if (properties.length === 0) {
+                return res.status(404).json({ message: 'No properties found for this host.' });
+            }
+            res.json(properties);
+        } catch (error) {
+            console.error(error); // Log the error for debugging
+            res.status(500).json({ error: error.message });
+        }
+    }
 }
 
 module.exports = new PropertyController(); 

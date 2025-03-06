@@ -31,6 +31,18 @@ class PropertyService {
         await property.destroy();
         return { message: 'Property deleted successfully' };
     }
+    async getPropertiesByHostId(host_id) {
+        try {
+            const properties = await Property.findAll({
+                where: {
+                    host_id: host_id
+                }
+            });
+            return properties;
+        } catch (error) {
+            throw new Error('Error retrieving properties: ' + error.message);
+        }
+    }
 }
 
 module.exports = PropertyService; 
