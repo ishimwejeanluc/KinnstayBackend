@@ -8,6 +8,6 @@ router.get('/:id', PropertyController.getPropertyById);
 router.post('/', PropertyController.createProperty);
 router.patch('/:id', PropertyController.updateProperty);
 router.delete('/:id', PropertyController.deleteProperty);
-router.get('/host/:id', PropertyController.getPropertiesByHostId)
+router.get('/host/:host_id', PropertyController.getPropertiesByHostId)
 
 module.exports = router; 

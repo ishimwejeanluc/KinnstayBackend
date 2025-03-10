@@ -1,4 +1,8 @@
 const BookingService = require('../services/BookingService');
+const Booking = require('../models/Booking');
+const { Op } = require('sequelize');
+const User = require('../models/User');
+const Property = require('../models/Property');
 
 class BookingController {
     async getAllBookings(req, res) {
@@ -46,6 +50,23 @@ class BookingController {
             const message = await BookingService.deleteBooking(id);
             res.json(message);
         } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    async getUpcomingBookings(req, res) {
+        const { guestId } = req.params;
+
+        try {
+            const upcomingBookings = await BookingService.getUpcomingBookings(guestId);
+
+            if (upcomingBookings.length === 0) {
+                return res.status(404).json({ message: 'No upcoming bookings found for this guest.' });
+            }
+
+            res.json(upcomingBookings);
+        } catch (error) {
+            console.error(error);
             res.status(500).json({ error: error.message });
         }
     }
