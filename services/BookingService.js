@@ -1,7 +1,8 @@
 const Booking = require('../models/Booking');
-const { Op } = require('sequelize');
+const { Op, fn, col, literal } = require('sequelize');
 const User = require('../models/User');
 const Property = require('../models/Property');
+const Payment = require('../models/Payment');
 
 class BookingService {
     async getAllBookings() {
@@ -36,34 +37,174 @@ class BookingService {
     }
 
     async getUpcomingBookings(guestId) {
-        const currentDate = new Date(); // Get the current date
-
+        const currentDate = new Date();
         try {
-            const upcomingBookings = await Booking.findAll({
+            return await Booking.findAll({
                 where: {
                     guest_id: guestId,
                     check_in: {
-                        [Op.gt]: currentDate // Only get bookings with check_in date in the future
+                        [Op.gt]: currentDate
                     }
                 },
                 include: [
                     {
                         model: User,
                         as: 'guest',
-                        attributes: ['id', 'name', 'email'] // Include guest details if needed
+                        attributes: ['id', 'name', 'email', 'profile_picture']
                     },
                     {
                         model: Property,
                         as: 'property',
-                        attributes: ['id', 'name', 'location'] // Include property details if needed
+                        attributes: ['id', 'title', 'location', 'picture', 'price_per_night']
                     }
-                ]
+                ],
+                order: [['check_in', 'ASC']] // Order by upcoming check-in dates
             });
-
-            return upcomingBookings; // Return the found bookings
         } catch (error) {
             throw new Error('Error retrieving upcoming bookings: ' + error.message);
         }
+    }
+
+    async getRecentBookings(guestId) {
+        try {
+            return await Booking.findAll({
+                where: {
+                    guest_id: guestId,
+                },
+                include: [
+                    {
+                        model: User,
+                        as: 'guest',
+                        attributes: ['id', 'name', 'email', 'profile_picture']
+                    },
+                    {
+                        model: Property,
+                        as: 'property',
+                        attributes: ['id', 'title', 'location', 'picture', 'price_per_night']
+                    }
+                ],
+                order: [['check_in', 'DESC']], // Order by check-in date descending
+                limit: 2 // Get the 2 most recent bookings
+            });
+        } catch (error) {
+            throw new Error('Error retrieving recent bookings: ' + error.message);
+        }
+    }
+
+    async getExpiredBookings(guestId) {
+        const currentDate = new Date();
+        try {
+            return await Booking.findAll({
+                where: {
+                    guest_id: guestId,
+                    check_out: {
+                        [Op.lt]: currentDate
+                    }
+                },
+                include: [
+                    {
+                        model: User,
+                        as: 'guest',
+                        attributes: ['id', 'name', 'email', 'profile_picture']
+                    },
+                    {
+                        model: Property,
+                        as: 'property',
+                        attributes: ['id', 'title', 'location', 'picture', 'price_per_night']
+                    }
+                ],
+                order: [['check_out', 'DESC']] // Order by most recently expired first
+            });
+        } catch (error) {
+            throw new Error('Error retrieving expired bookings: ' + error.message);
+        }
+    }
+
+    async getRecentBookingsByHost(hostId) {
+        try {
+            return await Booking.findAll({
+                include: [
+                    {
+                        model: Property,
+                        as: 'property',
+                        where: { host_id: hostId },
+                        attributes: ['id', 'title'],
+                    },
+                    {
+                        model: User,
+                        as: 'guest',
+                        attributes: ['id', 'name', 'email'],
+                    },
+                    {
+                        model: Payment,
+                        as: 'payment',
+                        attributes: ['amount', 'status'],
+                    }
+                ],
+                order: [['check_in', 'DESC']],
+                limit: 3,
+            });
+        } catch (error) {
+            throw new Error('Error retrieving recent bookings by host: ' + error.message);
+        }
+    }
+
+    async getHostEarnings(hostId) {
+        try {
+            // Calculate total revenue by month
+            const earnings = await Booking.findAll({
+                include: [
+                    {
+                        model: Property,
+                        as: 'property',
+                        where: { host_id: hostId },
+                        attributes: [],
+                    },
+                    {
+                        model: Payment,
+                        as: 'payment',
+                        attributes: ['amount', 'created_at'],
+                    }
+                ],
+                attributes: [
+                    [fn('SUM', col('payment.amount')), 'totalRevenue'],
+                    [fn('DATE_TRUNC', 'month', col('payment.created_at')), 'month'],
+                ],
+                group: [
+                    literal('month'),
+                    'payment.id'
+                ],
+                order: [[literal('month'), 'DESC']],
+            });
+
+            // Get recent transactions
+            const recentTransactions = await Payment.findAll({
+                include: [
+                    {
+                        model: Booking,
+                        as: 'booking',
+                        include: [
+                            {
+                                model: Property,
+                                as: 'property',
+                                where: { host_id: hostId },
+                                attributes: ['id', 'title'],
+                            }
+                        ]
+                    }
+                ],
+                order: [['created_at', 'DESC']],
+                limit: 5,
+            });
+
+            return { earnings, recentTransactions };
+        } catch (error) {
+            throw new Error('Error retrieving host earnings: ' + error.message);
+        }
+    }
+
+    async printBookingAssociations() {
+        console.log(Object.keys(Booking.associations));
     }
 }
 

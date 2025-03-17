@@ -36,6 +36,7 @@ class UserController {
             const user = await UserService.updateUser(id, updates);
             res.json(user);
         } catch (error) {
+            console.log(error);
             res.status(500).json({ error: error.message });
         }
     }

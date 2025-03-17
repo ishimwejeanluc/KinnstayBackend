@@ -70,6 +70,68 @@ class BookingController {
             res.status(500).json({ error: error.message });
         }
     }
+
+    async getRecentBookings(req, res) {
+        const { guestId } = req.params;
+        try {
+            const recentBookings = await BookingService.getRecentBookings(guestId);
+            res.json(recentBookings);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    async getExpiredBookings(req, res) {
+        const { guestId } = req.params;
+        try {
+            const expiredBookings = await BookingService.getExpiredBookings(guestId);
+            res.json(expiredBookings);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    async getRecentBookingsByHost(req, res) {
+        const { hostId } = req.params;
+        try {
+            const bookings = await BookingService.getRecentBookingsByHost(hostId);
+            res.json(bookings);
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    async getHostEarnings(req, res) {
+        const { hostId } = req.params;
+        try {
+            const earnings = await BookingService.getHostEarnings(hostId);
+            res.json(earnings);
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    async getRecentBookings(req, res) {
+        const { guestId } = req.params;
+        try {
+            const recentBookings = await BookingService.getRecentBookings(guestId);
+            res.json(recentBookings);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    async getExpiredBookings(req, res) {
+        const { guestId } = req.params;
+        try {
+            const expiredBookings = await BookingService.getExpiredBookings(guestId);
+            res.json(expiredBookings);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
 }
 
 module.exports = new BookingController(); 

@@ -1,0 +1,588 @@
+openapi: 3.0.0
+info:
+  title: Kinnstay API
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+paths:
+  /auth/login:
+    post:
+      summary: User login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: user@example.com
+                password:
+                  type: string
+                  example: yourpassword
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+  /auth/register:
+    post:
+      summary: User registration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: John Doe
+                email:
+                  type: string
+                  example: john@example.com
+                password:
+                  type: string
+                  example: yourpassword
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "b3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0b"
+                  name:
+                    type: string
+                    example: John Doe
+                  email:
+                    type: string
+                    example: john@example.com
+                  profile_picture:
+                    type: string
+                    example: https://res.cloudinary.com/sample.jpg
+
+  /users:
+    get:
+      summary: Get all users
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: "b3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0b"
+                    name:
+                      type: string
+                      example: John Doe
+                    email:
+                      type: string
+                      example: john@example.com
+                    profile_picture:
+                      type: string
+                      example: https://res.cloudinary.com/sample.jpg
+
+  /users/{id}:
+    get:
+      summary: Get user by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the user to retrieve
+          schema:
+            type: string
+            example: "b3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0b"
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "b3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0b"
+                  name:
+                    type: string
+                    example: John Doe
+                  email:
+                    type: string
+                    example: john@example.com
+                  profile_picture:
+                    type: string
+                    example: https://res.cloudinary.com/sample.jpg
+
+  /properties:
+    get:
+      summary: Get all properties
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: "d3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0d"
+                    title:
+                      type: string
+                      example: Beautiful Beach House
+                    location:
+                      type: string
+                      example: Miami, FL
+                    price_per_night:
+                      type: number
+                      example: 150
+                    host_id:
+                      type: string
+                      example: "b3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0b"
+                    picture:
+                      type: string
+                      example: https://res.cloudinary.com/sample.jpg
+
+    post:
+      summary: Create a new property
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: Beautiful Beach House
+                location:
+                  type: string
+                  example: Miami, FL
+                price_per_night:
+                  type: number
+                  example: 150
+                host_id:
+                  type: string
+                  example: "b3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0b"
+                picture:
+                  type: string
+                  example: https://res.cloudinary.com/sample.jpg
+      responses:
+        '201':
+          description: Property created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "d3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0d"
+                  title:
+                    type: string
+                    example: Beautiful Beach House
+                  location:
+                    type: string
+                    example: Miami, FL
+                  price_per_night:
+                    type: number
+                    example: 150
+                  host_id:
+                    type: string
+                    example: "b3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0b"
+                  picture:
+                    type: string
+                    example: https://res.cloudinary.com/sample.jpg
+
+  /properties/{id}:
+    get:
+      summary: Get property by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the property to retrieve
+          schema:
+            type: string
+            example: "d3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0d"
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "d3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0d"
+                  title:
+                    type: string
+                    example: Beautiful Beach House
+                  location:
+                    type: string
+                    example: Miami, FL
+                  price_per_night:
+                    type: number
+                    example: 150
+                  host_id:
+                    type: string
+                    example: "b3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0b"
+                  picture:
+                    type: string
+                    example: https://res.cloudinary.com/sample.jpg
+
+  /bookings:
+    get:
+      summary: Get all bookings
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: "f3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0f"
+                    guest_id:
+                      type: string
+                      example: "b3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0b"
+                    property_id:
+                      type: string
+                      example: "d3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0d"
+                    check_in:
+                      type: string
+                      format: date-time
+                      example: "2023-10-01T00:00:00.000Z"
+                    check_out:
+                      type: string
+                      format: date-time
+                      example: "2023-10-05T00:00:00.000Z"
+                    total_price:
+                      type: number
+                      example: 750
+                    status:
+                      type: string
+                      example: confirmed
+
+    post:
+      summary: Create a new booking
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                guest_id:
+                  type: string
+                  example: "b3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0b"
+                property_id:
+                  type: string
+                  example: "d3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0d"
+                check_in:
+                  type: string
+                  format: date-time
+                  example: "2023-10-01T00:00:00.000Z"
+                check_out:
+                  type: string
+                  format: date-time
+                  example: "2023-10-05T00:00:00.000Z"
+                total_price:
+                  type: number
+                  example: 750
+      responses:
+        '201':
+          description: Booking created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "f3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0f"
+                  guest_id:
+                    type: string
+                    example: "b3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0b"
+                  property_id:
+                    type: string
+                    example: "d3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0d"
+                  check_in:
+                    type: string
+                    format: date-time
+                    example: "2023-10-01T00:00:00.000Z"
+                  check_out:
+                    type: string
+                    format: date-time
+                    example: "2023-10-05T00:00:00.000Z"
+                  total_price:
+                    type: number
+                    example: 750
+                  status:
+                    type: string
+                    example: pending
+
+  /bookings/{id}:
+    get:
+      summary: Get booking by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the booking to retrieve
+          schema:
+            type: string
+            example: "f3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0f"
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "f3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0f"
+                  guest_id:
+                    type: string
+                    example: "b3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0b"
+                  property_id:
+                    type: string
+                    example: "d3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0d"
+                  check_in:
+                    type: string
+                    format: date-time
+                    example: "2023-10-01T00:00:00.000Z"
+                  check_out:
+                    type: string
+                    format: date-time
+                    example: "2023-10-05T00:00:00.000Z"
+                  total_price:
+                    type: number
+                    example: 750
+                  status:
+                    type: string
+                    example: confirmed
+
+    put:
+      summary: Update a booking
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the booking to update
+          schema:
+            type: string
+            example: "f3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0f"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: confirmed
+      responses:
+        '200':
+          description: Booking updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "f3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0f"
+                  guest_id:
+                    type: string
+                    example: "b3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0b"
+                  property_id:
+                    type: string
+                    example: "d3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0d"
+                  check_in:
+                    type: string
+                    format: date-time
+                    example: "2023-10-01T00:00:00.000Z"
+                  check_out:
+                    type: string
+                    format: date-time
+                    example: "2023-10-05T00:00:00.000Z"
+                  total_price:
+                    type: number
+                    example: 750
+                  status:
+                    type: string
+                    example: confirmed
+
+    delete:
+      summary: Delete a booking
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the booking to delete
+          schema:
+            type: string
+            example: "f3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0f"
+      responses:
+        '200':
+          description: Booking deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Booking deleted successfully
+
+  /payments:
+    post:
+      summary: Create a payment
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                booking_id:
+                  type: string
+                  example: "f3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0f"
+                guest_id:
+                  type: string
+                  example: "b3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0b"
+                amount:
+                  type: number
+                  example: 750
+                payment_method:
+                  type: string
+                  example: stripe
+                status:
+                  type: string
+                  example: paid
+      responses:
+        '201':
+          description: Payment created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "p3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0p"
+                  booking_id:
+                    type: string
+                    example: "f3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0f"
+                  guest_id:
+                    type: string
+                    example: "b3b0c1e0-4c3e-4c8b-8c3e-1c3e4b0c1e0b"
+                  amount:
+                    type: number
+                    example: 750
+                  payment_method:
+                    type: string
+                    example: stripe
+                  status:
+                    type: string
+                    example: paid
+                  created_at:
+                    type: string
+                    format: date-time
+                    example: "2023-10-01T00:00:00.000Z"
+
+  /payments/create-payment-intent:
+    post:
+      summary: Create a payment intent with Stripe
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+                  example: 750
+                currency:
+                  type: string
+                  example: usd
+                payment_method_types:
+                  type: array
+                  items:
+                    type: string
+                    example: stripe
+      responses:
+        '200':
+          description: Payment intent created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  client_secret:
+                    type: string
+                    example: "pi_1Gqj2e2eZvKYlo2C1e2e2e2e_secret_4f3b0c1e0"
+                  id:
+                    type: string
+                    example: "pi_1Gqj2e2eZvKYlo2C1e2e2e2e"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

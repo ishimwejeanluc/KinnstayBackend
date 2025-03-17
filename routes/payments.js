@@ -8,5 +8,6 @@ router.get('/:id', PaymentController.getPaymentById);
 router.post('/', PaymentController.createPayment);
 router.patch('/:id', PaymentController.updatePayment);
 router.delete('/:id', PaymentController.deletePayment);
+router.post('/create-payment-intent', PaymentController.createPaymentIntent);
 
 module.exports = router; 

@@ -3,6 +3,8 @@ const sequelize = require("../config/database");
 const User = require("./User");
 const Property = require("./Property");
 
+
+
 const Booking = sequelize.define("Booking", {
   id: {
     type: DataTypes.UUID,
@@ -53,5 +55,8 @@ Booking.belongsTo(User, { foreignKey: "guest_id", as: "guest" });
 Booking.belongsTo(Property, { foreignKey: "property_id", as: "property" });
 User.hasMany(Booking, { foreignKey: "guest_id" });
 Property.hasMany(Booking, { foreignKey: "property_id" });
+
+
+
 
 module.exports = Booking;

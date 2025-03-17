@@ -20,7 +20,7 @@ class AuthService {
             throw new Error('Invalid credentials');
         }
 
-        return jwt.sign({ id: user.id, email, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        return jwt.sign({ id: user.id, name: user.name, email:user.email, role: user.role, profile_picture: user.profile_picture, phone: user.phone }, process.env.JWT_SECRET, { expiresIn: '1h' });
     }
 }
 

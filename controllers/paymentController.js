@@ -1,4 +1,5 @@
 const PaymentService = require('../services/PaymentService');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 class PaymentController {
     async getAllPayments(req, res) {
@@ -46,6 +47,27 @@ class PaymentController {
             const message = await PaymentService.deletePayment(id);
             res.json(message);
         } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    async createPaymentIntent(req, res) {
+        const { amount, currency } = req.body; // Expect amount and currency from the request body
+
+        // Validate the input
+        if (!amount || !currency) {
+            return res.status(400).json({ error: 'Amount and currency are required.' });
+        }
+
+        try {
+            const paymentIntent = await stripe.paymentIntents.create({
+                amount,
+                currency,
+            });
+
+            res.json({ clientSecret: paymentIntent.client_secret });
+        } catch (error) {
+            console.error('Error creating payment intent:', error);
             res.status(500).json({ error: error.message });
         }
     }
